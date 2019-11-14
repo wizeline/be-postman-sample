@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "fa41492d-45c2-45be-97d8-fd15ee81d348",
+		"name": "CountryCollectionExample",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Mexico",
+			"item": [
+				{
+					"name": "Mexico",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "b32e518e-4d1b-4da3-b4e8-b53a4d22df28",
+								"exec": [
+									"//Create global function. These functions can be invoked from any other request with 'eval()'.",
+									"postman.setGlobalVariable(\"isValidResponse\", () => {",
+									"    pm.test('returns a valid response', () => {",
+									"      pm.response.to.have.status(200);",
+									"      pm.response.to.be.json;",
+									"      pm.response.to.be.not.empty;",
+									"    });",
+									"});",
+									"",
+									"postman.setGlobalVariable(\"schemaValidation\", (schemaValidator) => {",
+									"    pm.test('has a valid JSON schema', () => {",
+									"        const jsonResponse = pm.response.json();",
+									"        let schema = JSON.parse(schemaValidator);",
+									"        pm.expect(tv4.validate(jsonResponse, schema )).to.be.true;",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a75e4ad-ddc7-4a56-a62d-d8f65568732e",
+								"exec": [
+									"// to check global function, please go to the first request and look into 'Pre-req' to see the functions used bellow",
+									"",
+									"// global assertions--------------------------------------------------------",
+									"",
+									"// status 200. valid json",
+									"eval(globals.isValidResponse)();",
+									"",
+									"//json schema validation",
+									"eval(globals.schemaValidation)(pm.environment.get(\"schema_country\"));",
+									"",
+									"// custom assertions--------------------------------------------------------",
+									"",
+									"let jsonResponse = pm.response.json()[0]; // first element or response array",
+									"",
+									"pm.test('is mexico', () => {",
+									"  pm.expect(jsonResponse.name).to.equal(\"Mexico\");",
+									"});",
+									"",
+									"pm.test('shows right capital', () => {",
+									"  pm.expect(jsonResponse.capital).to.equal(\"Mexico City\");",
+									"});",
+									"",
+									"pm.test('has spanish as language', () => {",
+									"  pm.expect(jsonResponse.languages[0].name).to.equal(\"Spanish\");",
+									"});",
+									"",
+									"pm.test('population is greater than cero', () => {",
+									"  pm.expect(jsonResponse.population).to.be.gt(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/name/{{country_name}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"name",
+								"{{country_name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b4ee799c-c709-4d13-bd01-4b6211434cb1",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "50a61082-c090-4721-b1f3-5323875bee98",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
